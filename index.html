@@ -85,12 +85,47 @@
     color: #c07c00;
     font-weight: bold;
   }
+.npc-box {
+  display: flex;
+  gap: 10px;
+}
+
+.npc-avatar {
+  width: 40px;
+  height: 40px;
+  background: #ffd966;
+  border: 3px solid #6b4f2a;
+  box-shadow: 2px 2px 0 #bfa76a;
+  border-radius: 6px;
+  position: relative;
+}
+
+.npc-avatar::after {
+  content: "🙂";
+  position: absolute;
+  top: 6px;
+  left: 6px;
+  font-size: 20px;
+}
 </style>
 </head>
 <body>
 
   <div class="box" id="app"></div>
 
+  function typeText(element, text, speed = 30, callback) {
+  element.innerHTML = "";
+  let i = 0;
+  const timer = setInterval(() => {
+    element.innerHTML += text[i];
+    i++;
+    if (i >= text.length) {
+      clearInterval(timer);
+      if (callback) callback();
+    }
+  }, speed);
+}
+  
   <script>
     let step = 0;
     let data = {};
@@ -102,24 +137,39 @@
     function render() {
       const app = document.getElementById("app");
 
-      if (step === 0) {
-        app.innerHTML = `
-          <p class="npc">👤 村長：</p>
-          <p>
-          冒險者啊……<br>
-          你是否願意接受<br>
-          「加穎 & 姵妤」的婚禮任務？
-    </p>
-    <button onclick="next()">接受任務</button>
-        `;
-      }
+if (step === 0) {
+  app.innerHTML = `
+  <div class="npc-box">
+    <div class="npc-avatar"></div>
+    <div>
+      <p class="npc">👤 村長：</p>
+      <p id="dialog"></p>
+    </div>
+  </div>
+  <button id="btn" style="display:none" onclick="next()">接受任務</button>
+`;
+  const dialog = document.getElementById("dialog");
+  const btn = document.getElementById("btn");
+
+  typeText(
+    dialog,
+    "冒險者啊……\n你是否願意接受\n「加穎 & 姵妤」的婚禮任務？",
+    35,
+    () => btn.style.display = "inline-block"
+  );
+}
 
       else if (step === 1) {
         app.innerHTML = `
-          <p class="npc">👤 村長：</p>
-          <p>先告訴我你的名字吧，冒險者。</p>
-          <input id="name" placeholder="輸入你的名字" />
-          <button onclick="saveName()">確定</button>
+<div class="quest">
+      📜 任務目標：<br>
+      ✔ 回覆婚禮出席意願
+    </div>
+
+    <p class="npc">👤 村長：</p>
+    <p>先告訴我你的名字吧，冒險者。</p>
+    <input id="name" placeholder="輸入你的名字" />
+    <button onclick="saveName()">確定</button>
         `;
       }
 
