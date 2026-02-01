@@ -4,35 +4,88 @@
   <meta charset="UTF-8" />
   <title>婚禮任務｜加穎 & 姵妤</title>
   <style>
-    body {
-      background: #f3efe2;
-      font-family: "Courier New", monospace;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
+  body {
+    background:
+      linear-gradient(#f7f2e8, #efe4cf);
+    font-family: "Courier New", monospace;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+  }
+
+  .box {
+    width: 360px;
+    background: #fff7dc;
+    border: 4px solid #6b4f2a;
+    box-shadow:
+      4px 4px 0 #c9b38c,
+      inset 0 0 0 2px #fff;
+    padding: 18px;
+    box-sizing: border-box;
+    animation: popIn 0.25s ease-out;
+  }
+
+  @keyframes popIn {
+    from {
+      transform: scale(0.95);
+      opacity: 0;
     }
-    .box {
-      width: 360px;
-      background: #fff6dc;
-      border: 4px solid #5a4632;
-      padding: 20px;
-      box-sizing: border-box;
+    to {
+      transform: scale(1);
+      opacity: 1;
     }
-    button {
-      margin-top: 12px;
-      padding: 6px 12px;
-      font-family: inherit;
-      cursor: pointer;
-    }
-    input, textarea {
-      width: 100%;
-      margin-top: 8px;
-      box-sizing: border-box;
-      font-family: inherit;
-    }
-  </style>
+  }
+
+  p {
+    margin: 0 0 10px;
+    line-height: 1.6;
+    font-size: 14px;
+  }
+
+  .npc {
+    font-weight: bold;
+    color: #5a3d1e;
+  }
+
+  button {
+    display: inline-block;
+    margin-top: 10px;
+    padding: 6px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    background: linear-gradient(#f9e29c, #e3b95b);
+    border: 2px solid #6b4f2a;
+    box-shadow: 2px 2px 0 #bfa76a;
+    cursor: pointer;
+  }
+
+  button:hover {
+    background: linear-gradient(#fff1b8, #f0c96a);
+  }
+
+  button:active {
+    transform: translate(1px, 1px);
+    box-shadow: 1px 1px 0 #bfa76a;
+  }
+
+  input, textarea {
+    width: 100%;
+    margin-top: 6px;
+    padding: 6px;
+    font-family: inherit;
+    font-size: 14px;
+    border: 2px solid #6b4f2a;
+    background: #fffdf5;
+    box-sizing: border-box;
+  }
+
+  .exp {
+    color: #c07c00;
+    font-weight: bold;
+  }
+</style>
 </head>
 <body>
 
@@ -51,16 +104,22 @@
 
       if (step === 0) {
         app.innerHTML = `
-          <p>👤 村長：冒險者，是否接受參加<br>「加穎 & 姵妤」的婚禮任務？</p>
-          <button onclick="next()">接受任務</button>
+          <p class="npc">👤 村長：</p>
+          <p>
+          冒險者啊……<br>
+          你是否願意接受<br>
+          「加穎 & 姵妤」的婚禮任務？
+    </p>
+    <button onclick="next()">接受任務</button>
         `;
       }
 
       else if (step === 1) {
         app.innerHTML = `
-          <p>📝 請輸入你的名字：</p>
-          <input id="name" placeholder="你的名字" />
-          <button onclick="saveName()">下一步</button>
+          <p class="npc">👤 村長：</p>
+          <p>先告訴我你的名字吧，冒險者。</p>
+          <input id="name" placeholder="輸入你的名字" />
+          <button onclick="saveName()">確定</button>
         `;
       }
 
@@ -90,9 +149,15 @@
 
       else if (step === 5) {
         app.innerHTML = `
-          <p>🎉 任務完成！</p>
-          <p>感謝你接受婚禮任務</p>
-          <p>EXP +100 ✨</p>
+    <p class="npc">✨ 任務完成 ✨</p>
+    <p>
+      你已成功回覆婚禮邀請<br>
+      新人感到非常開心！
+    </p>
+    <p class="exp">
+      EXP +100<br>
+      好感度 +10 💛
+    </p>
         `;
       }
     }
