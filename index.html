@@ -1,234 +1,200 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-  <meta charset="UTF-8" />
-  <title>婚禮任務｜加穎 & 姵妤</title>
+<meta charset="UTF-8" />
+<title>婚禮冒險｜加穎 & 姵妤</title>
 
-  <style>
-    body {
-      background: linear-gradient(#f7f2e8, #efe4cf);
-      font-family: "Courier New", monospace;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      margin: 0;
-    }
+<style>
+  body {
+    margin: 0;
+    height: 100vh;
+    background:
+      radial-gradient(circle at top, rgba(255,255,255,0.5), transparent 60%),
+      linear-gradient(#8fd19e, #5aa469);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-family: "Courier New", monospace;
+  }
 
-    .box {
-      width: 360px;
-      background: #fff7dc;
-      border: 4px solid #6b4f2a;
-      box-shadow: 4px 4px 0 #c9b38c, inset 0 0 0 2px #fff;
-      padding: 18px;
-      box-sizing: border-box;
-      animation: popIn 0.25s ease-out;
-    }
+  .book {
+    background: #f7f0dc;
+    border: 10px solid #c8b38a;
+    box-shadow: 0 0 0 4px #fff, 8px 8px 0 rgba(0,0,0,0.25);
+    width: 380px;
+    padding: 18px;
+  }
 
-    @keyframes popIn {
-      from { transform: scale(0.95); opacity: 0; }
-      to   { transform: scale(1); opacity: 1; }
-    }
+  .screen {
+    background: linear-gradient(#dff3e3, #b7ddb0);
+    border: 4px solid #6b4f2a;
+    padding: 16px;
+    min-height: 260px;
+  }
 
-    p {
-      margin: 0 0 8px;
-      line-height: 1.6;
-      font-size: 14px;
-    }
+  h2 {
+    margin: 0 0 10px;
+    text-align: center;
+    color: #5a3d1e;
+  }
 
-    .npc {
-      font-weight: bold;
-      color: #5a3d1e;
-    }
+  p {
+    font-size: 14px;
+    margin: 6px 0;
+  }
 
-    button {
-      margin-top: 10px;
-      padding: 6px 16px;
-      font-family: inherit;
-      font-size: 14px;
-      background: linear-gradient(#f9e29c, #e3b95b);
-      border: 2px solid #6b4f2a;
-      box-shadow: 2px 2px 0 #bfa76a;
-      cursor: pointer;
-    }
+  .login {
+    text-align: center;
+    margin-top: 20px;
+  }
 
-    button:active {
-      transform: translate(1px,1px);
-      box-shadow: 1px 1px 0 #bfa76a;
-    }
+  input, textarea {
+    width: 100%;
+    padding: 6px;
+    font-family: inherit;
+    border: 2px solid #6b4f2a;
+    background: #fffdf5;
+    margin-top: 6px;
+    box-sizing: border-box;
+  }
 
-    input, textarea {
-      width: 100%;
-      margin-top: 6px;
-      padding: 6px;
-      font-family: inherit;
-      border: 2px solid #6b4f2a;
-      background: #fffdf5;
-      box-sizing: border-box;
-    }
+  button {
+    margin-top: 10px;
+    padding: 6px 16px;
+    font-family: inherit;
+    font-size: 14px;
+    background: linear-gradient(#f9e29c, #e3b95b);
+    border: 2px solid #6b4f2a;
+    box-shadow: 2px 2px 0 #bfa76a;
+    cursor: pointer;
+  }
 
-    .npc-box {
-      display: flex;
-      gap: 10px;
-      margin-bottom: 6px;
-    }
+  button:active {
+    transform: translate(1px,1px);
+    box-shadow: 1px 1px 0 #bfa76a;
+  }
 
-    .npc-avatar {
-      width: 40px;
-      height: 40px;
-      background: #ffd966;
-      border: 3px solid #6b4f2a;
-      box-shadow: 2px 2px 0 #bfa76a;
-      border-radius: 6px;
-      position: relative;
-    }
+  .npc {
+    font-weight: bold;
+    color: #5a3d1e;
+  }
 
-    .npc-avatar::after {
-      content: "🙂";
-      position: absolute;
-      top: 6px;
-      left: 6px;
-      font-size: 20px;
-    }
+  .music {
+    text-align: right;
+    font-size: 12px;
+    cursor: pointer;
+    color: #5a3d1e;
+  }
 
-    .quest {
-      background: #fff;
-      border: 2px dashed #6b4f2a;
-      padding: 8px;
-      margin-bottom: 10px;
-      font-size: 13px;
-    }
-
-    .exp {
-      color: #c07c00;
-      font-weight: bold;
-    }
-  </style>
+  .quest {
+    background: #fff;
+    border: 2px dashed #6b4f2a;
+    padding: 6px;
+    margin-bottom: 8px;
+    font-size: 13px;
+  }
+</style>
 </head>
 
 <body>
-  <div class="box" id="app"></div>
+<div class="book">
+  <div class="music" onclick="toggleMusic()">🎵 音樂 開 / 關</div>
+  <div class="screen" id="app"></div>
+</div>
 
-  <script>
-    const clickSound = new Audio(
-      "https://assets.mixkit.co/sfx/preview/mixkit-game-click-1114.mp3"
-    );
+<audio id="bgm" loop>
+  <!-- 免費、合法、楓之谷感的背景音樂 -->
+  <source src="https://cdn.pixabay.com/audio/2022/10/18/audio_8a3f2c5f6c.mp3" type="audio/mpeg">
+</audio>
 
-    let step = 0;
-    let data = {};
+<script>
+let step = 0;
+let data = {};
 
-    window.onload = () => render();
+function toggleMusic() {
+  const bgm = document.getElementById("bgm");
+  bgm.paused ? bgm.play() : bgm.pause();
+}
 
-    function typeText(el, text, speed = 30, done) {
-      el.innerHTML = "";
-      let i = 0;
-      const timer = setInterval(() => {
-        el.innerHTML += text[i];
-        i++;
-        if (i >= text.length) {
-          clearInterval(timer);
-          if (done) done();
-        }
-      }, speed);
-    }
+window.onload = () => render();
 
-    function render() {
-      const app = document.getElementById("app");
+function render() {
+  const app = document.getElementById("app");
 
-      if (step === 0) {
-        app.innerHTML = `
-          <div class="npc-box">
-            <div class="npc-avatar"></div>
-            <div>
-              <p class="npc">👤 村長：</p>
-              <p id="dialog"></p>
-            </div>
-          </div>
-          <button id="btn" style="display:none" onclick="next()">接受任務</button>
-        `;
-        typeText(
-          document.getElementById("dialog"),
-          "冒險者啊……\n你是否願意接受\n「加穎 & 姵妤」的婚禮任務？",
-          35,
-          () => document.getElementById("btn").style.display = "inline-block"
-        );
-      }
+  if (step === 0) {
+    app.innerHTML = `
+      <h2>🍁 婚禮冒險 🍁</h2>
+      <div class="login">
+        <p>請輸入冒險者名稱</p>
+        <input id="name" placeholder="角色名稱" />
+        <button onclick="saveName()">開始冒險</button>
+      </div>
+    `;
+  }
 
-      else if (step === 1) {
-        app.innerHTML = `
-          <div class="quest">📜 任務目標：回覆婚禮出席意願</div>
-          <p class="npc">👤 村長：</p>
-          <p>先告訴我你的名字吧，冒險者。</p>
-          <input id="name" placeholder="輸入你的名字" />
-          <button onclick="saveName()">確定</button>
-        `;
-      }
+  else if (step === 1) {
+    app.innerHTML = `
+      <div class="quest">📜 任務：回覆婚禮出席意願</div>
+      <p class="npc">👤 村長：</p>
+      <p>你是否能出席婚禮呢？</p>
+      <button onclick="saveAttend('出席')">我會出席</button>
+      <button onclick="saveAttend('不克出席')">不克出席</button>
+    `;
+  }
 
-      else if (step === 2) {
-        app.innerHTML = `
-          <p class="npc">👤 村長：</p>
-          <p>你是否能出席婚禮呢？</p>
-          <button onclick="saveAttend('出席')">我會出席</button>
-          <button onclick="saveAttend('不克出席')">不克出席</button>
-        `;
-      }
+  else if (step === 2) {
+    app.innerHTML = `
+      <p class="npc">👤 村長：</p>
+      <p>你將參加哪一個場次？</p>
+      <button onclick="saveSession('早上迎娶')">早上迎娶</button>
+      <button onclick="saveSession('中午宴客')">中午宴客</button>
+      <button onclick="saveSession('迎娶＋宴客')">兩者皆參加</button>
+    `;
+  }
 
-      else if (step === 3) {
-        app.innerHTML = `
-          <p class="npc">👤 村長：</p>
-          <p>你將參加哪一個場次？</p>
-          <button onclick="saveSession('早上迎娶')">早上迎娶</button>
-          <button onclick="saveSession('中午宴客')">中午宴客</button>
-          <button onclick="saveSession('迎娶＋宴客')">兩者皆參加</button>
-        `;
-      }
+  else if (step === 3) {
+    app.innerHTML = `
+      <p class="npc">👤 村長：</p>
+      <p>有沒有想對新人說的話？</p>
+      <textarea id="note" rows="3"></textarea>
+      <button onclick="finish()">完成任務</button>
+    `;
+  }
 
-      else if (step === 4) {
-        app.innerHTML = `
-          <p class="npc">👤 村長：</p>
-          <p>有沒有想對新人說的話？</p>
-          <textarea id="note" rows="3"></textarea>
-          <button onclick="finish()">完成任務</button>
-        `;
-      }
+  else if (step === 4) {
+    app.innerHTML = `
+      <p class="npc">✨ 任務完成 ✨</p>
+      <p>新人已收到你的回覆<br>感到非常開心！</p>
+      <p><strong>EXP +100<br>好感度 +10 💛</strong></p>
+    `;
+  }
+}
 
-      else if (step === 5) {
-        app.innerHTML = `
-          <p class="npc">✨ 任務完成 ✨</p>
-          <p>你已成功回覆婚禮邀請<br>新人感到非常開心！</p>
-          <p class="exp">EXP +100<br>好感度 +10 💛</p>
-        `;
-      }
-    }
+function saveName() {
+  const v = document.getElementById("name").value;
+  if (!v) return alert("請輸入名字");
+  data.name = v;
+  step++;
+  render();
+}
 
-    function next() {
-      clickSound.currentTime = 0;
-      clickSound.play();
-      step++;
-      render();
-    }
+function saveAttend(v) {
+  data.attend = v;
+  step++;
+  render();
+}
 
-    function saveName() {
-      const v = document.getElementById("name").value;
-      if (!v) return alert("請輸入名字");
-      data.name = v;
-      next();
-    }
+function saveSession(v) {
+  data.session = v;
+  step++;
+  render();
+}
 
-    function saveAttend(v) {
-      data.attend = v;
-      next();
-    }
-
-    function saveSession(v) {
-      data.session = v;
-      next();
-    }
-
-    function finish() {
-      data.note = document.getElementById("note").value;
-      next();
-    }
-  </script>
+function finish() {
+  data.note = document.getElementById("note").value;
+  step++;
+  render();
+}
+</script>
 </body>
 </html>
