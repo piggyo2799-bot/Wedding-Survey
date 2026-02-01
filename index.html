@@ -208,14 +208,21 @@ function render() {
       <button onclick="saveSession('迎娶＋宴客')">兩者皆參加</button>
     `;
   }
-  else if (step === 4) {
-    app.innerHTML = `
-      <p class="npc">👤 村長：</p>
-      <p>有沒有想對新人說的話？</p>
-      <textarea id="note" rows="3"></textarea>
-      <button onclick="finish()">完成任務</button>
-    `;
-  }
+else if (step === 4) {
+
+  const message =
+    (data.attend === "不克出席")
+      ? "有沒有想對新人說的祝福？"
+      : "有沒有想對新人說的話？";
+
+  app.innerHTML = `
+    <p class="npc">👤 村長：</p>
+    <p>${message}</p>
+    <textarea id="note" rows="3"></textarea>
+    <button onclick="finish()">完成任務</button>
+  `;
+}
+
   else if (step === 5) {
      coinBurst(); // 💰 任務完成瞬間掉寶
     app.innerHTML = `
