@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<title>婚禮任務｜加穎 & 姵妤</title>
+<style>
+body {
+  background:#f3efe2;
+  font-family: "Courier New", monospace;
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  height:100vh;
+}
+.box {
+  width:360px;
+  background:#fdf6dc;
+  border:4px solid #5a4632;
+  padding:20px;
+}
+button {
+  margin-top:15px;
+  padding:8px 16px;
+  background:#e6d3a3;
+  border:2px solid #5a4632;
+  cursor:pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="box" id="app">
+  <p id="text">🧙‍♂️ 村長：冒險者，是否接受參加「加穎 & 姵妤」的婚禮任務？</p>
+  <button onclick="next()">接受任務</button>
+</div>
+
+<script>
+const apiURL = https://script.google.com/macros/s/AKfycbxLGthp3Cwuc9SKYwp69wz2eakuEtwWRAq9r_wJVewAEgDfnhdBXWaXrIows61V9JqK/exec;
+let step = 0;
+let data = {};
+
+function next() {
+  const app = document.getElementById("app");
+  step++;
+
+  if(step===1){
+    app.innerHTML = `名字是？<br><input id="name"><br><button onclick="saveName()">下一句對話</button>`;
+  }
+}
+
+function saveName(){
+  data.name = document.getElementById("name").value;
+  document.getElementById("app").innerHTML = `
+  是否出席？<br>
+  <button onclick="attend('會出席')">我一定會到</button>
+  <button onclick="attend('不出席')">無法出席</button>`;
+}
+
+function attend(v){
+  data.attend = v;
+  document.getElementById("app").innerHTML = `
+  出席場次？<br>
+  <button onclick="session('迎娶')">迎娶（上午）</button>
+  <button onclick="session('午宴')">午宴</button>
+  <button onclick="session('迎娶＋午宴')">都出席</button>`;
+}
+
+function session(v){
+  data.session = v;
+  submit();
+}
+
+function submit(){
+  fetch(apiURL,{
+    method:"POST",
+    body:JSON.stringify(data)
+  });
+  document.getElementById("app").innerHTML = `
+  🎉 任務完成！<br>
+  EXP +100<br>
+  婚禮當天見 🍁`;
+}
+</script>
+
+</body>
+</html>
