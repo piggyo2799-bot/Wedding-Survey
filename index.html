@@ -1,22 +1,16 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8" />
+<meta charset="UTF-8">
 <title>婚禮任務｜加穎 & 姵妤</title>
 
 <style>
-  body {
+body {
   margin: 0;
   height: 100vh;
-
-  /* 🍁 楓之谷風合法森林背景 */
   background:
-    linear-gradient(
-      rgba(255, 248, 230, 0.55),
-      rgba(255, 248, 230, 0.65)
-    ),
+    linear-gradient(rgba(255,248,230,0.6), rgba(255,248,230,0.75)),
     url("https://cdn.pixabay.com/photo/2020/04/18/07/58/fantasy-5052484_1280.jpg");
-
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
@@ -26,157 +20,129 @@
   align-items: center;
 
   font-family: "Courier New", monospace;
+  overflow: hidden;
 }
 
-  .frame {
-    background: #f4ecd6;
-    border: 8px solid #9c8354;
-    box-shadow: 0 0 0 4px #fff, 6px 6px 0 rgba(0,0,0,0.35);
-    width: 390px;
-    padding: 14px;
-  }
+/* 🍁 外層木框 */
+.frame {
+  background: linear-gradient(#c7a96d, #8b6b3e);
+  padding: 12px;
+  border: 6px solid #5a3d1e;
+  box-shadow: 0 0 0 4px #fff, 10px 10px 0 rgba(0,0,0,0.35);
+}
 
-  .music-hint {
-    background: #fff;
-    border: 2px solid #6b5a3a;
-    padding: 6px;
-    margin-bottom: 6px;
-    font-size: 13px;
-    text-align: center;
-  }
+/* 📜 任務視窗 */
+.window {
+  background: #fff8e6;
+  border: 4px solid #6b5a3a;
+  padding: 14px;
+  width: 380px;
+  min-height: 300px;
+  position: relative;
+  z-index: 2;
+}
 
-  .window {
-    background: #fff8e6;
-    border: 4px solid #6b5a3a;
-    padding: 14px;
-    min-height: 280px;
-  }
+p {
+  font-size: 14px;
+  line-height: 1.6;
+  margin: 6px 0;
+  color: #3e3e3e;
+}
 
-  p {
-    font-size: 14px;
-    margin: 6px 0;
-    line-height: 1.6;
-    color: #3e3e3e;
-  }
+.npc {
+  font-weight: bold;
+  color: #5a3d1e;
+}
 
-  .npc {
-    font-weight: bold;
-    color: #5a3d1e;
-  }
+.quest {
+  background: #fff;
+  border: 2px dashed #6b5a3a;
+  padding: 6px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
 
-  .quest {
-    background: #fff;
-    border: 2px dashed #6b5a3a;
-    padding: 6px;
-    margin-bottom: 8px;
-    font-size: 13px;
-  }
+.exp {
+  color: #a36a00;
+  font-weight: bold;
+}
 
-  .exp {
-    color: #a36a00;
-    font-weight: bold;
-  }
+input, textarea {
+  width: 100%;
+  padding: 6px;
+  font-family: inherit;
+  border: 2px solid #6b5a3a;
+  background: #fffdf5;
+  margin-top: 6px;
+  box-sizing: border-box;
+}
 
-  input, textarea {
-    width: 100%;
-    padding: 6px;
-    font-family: inherit;
-    border: 2px solid #6b5a3a;
-    background: #fffdf5;
-    margin-top: 6px;
-    box-sizing: border-box;
-  }
+button {
+  margin-top: 8px;
+  padding: 6px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  background: linear-gradient(#f6dc9a, #d2b26a);
+  border: 2px solid #6b5a3a;
+  box-shadow: 2px 2px 0 #bfa76a;
+  cursor: pointer;
+}
 
-  button {
-    margin-top: 8px;
-    padding: 6px 14px;
-    font-family: inherit;
-    font-size: 14px;
-    background: linear-gradient(#f6dc9a, #d2b26a);
-    border: 2px solid #6b5a3a;
-    box-shadow: 2px 2px 0 #bfa76a;
-    cursor: pointer;
-  }
+button:active {
+  transform: translate(1px,1px);
+  box-shadow: 1px 1px 0 #bfa76a;
+}
 
-  button:active {
-    transform: translate(1px,1px);
-    box-shadow: 1px 1px 0 #bfa76a;
-  }
+/* 🍁 楓葉動畫 */
+.leaf {
+  position: fixed;
+  top: -50px;
+  font-size: 20px;
+  animation: fall linear infinite;
+  pointer-events: none;
+  z-index: 1;
+  opacity: 0.8;
+}
 
-  .emoji-bar {
-    text-align: center;
-    font-size: 22px;
-    margin-bottom: 6px;
+@keyframes fall {
+  to {
+    transform: translateY(110vh) rotate(360deg);
   }
+}
 
-  .pixel-img {
-    display: block;
-    margin: 6px auto;
-    width: 120px;
-    image-rendering: pixelated;
-  }
+/* ✨ LEVEL UP */
+.levelup {
+  text-align: center;
+  animation: glow 1.2s infinite alternate;
+  color: #a36a00;
+  font-weight: bold;
+  font-size: 18px;
+}
+
+@keyframes glow {
+  from { text-shadow: 0 0 4px #ffd700; }
+  to   { text-shadow: 0 0 12px #fff3a0; }
+}
 </style>
 </head>
 
 <body>
+
 <div class="frame">
-
-  <!-- 🎵 音樂提示 -->
-  <div id="musicHint" class="music-hint">
-    🔊 建議開啟背景音樂，體驗完整冒險感<br>
-    <button onclick="enableMusic()">開啟音樂</button>
-  </div>
-
   <div class="window" id="app"></div>
 </div>
-
-<!-- 🎵 音樂（合法素材） -->
-<audio id="music-login" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5c31e4d1c4.mp3">
-</audio>
-<audio id="music-quest" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/10/18/audio_8a3f2c5f6c.mp3">
-</audio>
-<audio id="music-finish">
-  <source src="https://cdn.pixabay.com/audio/2022/03/09/audio_1c3d44e7c2.mp3">
-</audio>
 
 <script>
 let step = 0;
 let data = {};
-let musicEnabled = false;
 
-window.onload = () => render();
-
-/* ===== 音樂 ===== */
-function stopAllMusic() {
-  ["music-login","music-quest","music-finish"].forEach(id => {
-    const m = document.getElementById(id);
-    m.pause(); m.currentTime = 0;
-  });
+/* 🍁 背景亮度隨進度變化 */
+function updateBackground() {
+  document.body.style.filter =
+    "brightness(" + (0.85 + step * 0.03) + ")";
 }
 
-function enableMusic() {
-  musicEnabled = true;
-  document.getElementById("musicHint").style.display = "none";
-  playQuestMusic();
-}
-
-function playQuestMusic() {
-  if (!musicEnabled) return;
-  stopAllMusic();
-  const m = document.getElementById("music-quest");
-  m.volume = 0.35; m.play();
-}
-
-function playFinishMusic() {
-  if (!musicEnabled) return;
-  stopAllMusic();
-  const m = document.getElementById("music-finish");
-  m.volume = 0.5; m.play();
-}
-
-/* ===== SVG 公告牌 ===== */
+/* 🍁 SVG 公告牌 */
 function noticeBoard() {
   return `
   <div style="text-align:center; margin-bottom:6px;">
@@ -191,14 +157,14 @@ function noticeBoard() {
   </div>`;
 }
 
-/* ===== 畫面流程 ===== */
+/* 🍁 主流程 */
 function render() {
+  updateBackground();
   const app = document.getElementById("app");
 
   if (step === 0) {
     app.innerHTML = `
       ${noticeBoard()}
-      <div class="emoji-bar">🌳 🍁 🍄</div>
       <p class="npc">👤 村長：</p>
       <p>
         冒險者啊……<br>
@@ -213,19 +179,15 @@ function render() {
   else if (step === 1) {
     app.innerHTML = `
       <div class="quest">📜 任務：回覆婚禮出席意願</div>
-      <img class="pixel-img"
-        src="https://opengameart.org/sites/default/files/tree_0.png">
       <p class="npc">👤 村長：</p>
-      <p>先告訴我你的名字吧。</p>
+      <p>請先告訴我你的名字。</p>
       <input id="name" placeholder="冒險者名稱">
       <button onclick="saveName()">確定</button>
     `;
   }
 
   else if (step === 2) {
-    playQuestMusic();
     app.innerHTML = `
-      <div class="emoji-bar">🍄 🍄</div>
       <p class="npc">👤 村長：</p>
       <p>你是否能出席婚禮呢？</p>
       <button onclick="saveAttend('出席')">我會出席</button>
@@ -253,16 +215,16 @@ function render() {
   }
 
   else if (step === 5) {
-    playFinishMusic();
     app.innerHTML = `
-      <div class="emoji-bar">✨ 🎉 ✨</div>
-      <p class="npc">✨ 任務完成 ✨</p>
+      <div class="levelup">✨ LEVEL UP ✨</div>
+      <p class="npc">🎉 任務完成 🎉</p>
       <p>新人已收到你的回覆<br>感到非常開心！</p>
-      <p class="exp">EXP +1314<br>名聲 +520 💛</p>
+      <p class="exp">EXP +100<br>好感度 +10 💛</p>
     `;
   }
 }
 
+/* 🍁 行為 */
 function decline() {
   document.getElementById("app").innerHTML = `
     <p class="npc">👤 村長：</p>
@@ -280,6 +242,20 @@ function saveName() {
 function saveAttend(v) { data.attend = v; step++; render(); }
 function saveSession(v) { data.session = v; step++; render(); }
 function finish() { data.note = document.getElementById("note").value; step++; render(); }
+
+/* 🍁 楓葉生成 */
+for (let i = 0; i < 12; i++) {
+  const leaf = document.createElement("div");
+  leaf.className = "leaf";
+  leaf.innerText = "🍁";
+  leaf.style.left = Math.random() * 100 + "vw";
+  leaf.style.animationDuration = 6 + Math.random() * 6 + "s";
+  leaf.style.animationDelay = Math.random() * 5 + "s";
+  document.body.appendChild(leaf);
+}
+
+render();
 </script>
+
 </body>
 </html>
