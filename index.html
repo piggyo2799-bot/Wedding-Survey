@@ -93,15 +93,14 @@ button:active {
   box-shadow: 1px 1px 0 #bfa76a;
 }
 
-/* 🍁 楓葉動畫 */
+/* 🍁 漂浮動畫 */
 .leaf {
   position: fixed;
   top: -50px;
-  font-size: 20px;
   animation: fall linear infinite;
   pointer-events: none;
   z-index: 1;
-  opacity: 0.8;
+  opacity: 0.85;
 }
 
 @keyframes fall {
@@ -136,13 +135,13 @@ button:active {
 let step = 0;
 let data = {};
 
-/* 🍁 背景亮度隨進度變化 */
+/* 🌅 背景亮度隨進度變化 */
 function updateBackground() {
   document.body.style.filter =
     "brightness(" + (0.85 + step * 0.03) + ")";
 }
 
-/* 🍁 SVG 公告牌 */
+/* 🪵 SVG 任務公告牌 */
 function noticeBoard() {
   return `
   <div style="text-align:center; margin-bottom:6px;">
@@ -157,7 +156,7 @@ function noticeBoard() {
   </div>`;
 }
 
-/* 🍁 主流程 */
+/* 🎮 主流程 */
 function render() {
   updateBackground();
   const app = document.getElementById("app");
@@ -175,17 +174,15 @@ function render() {
       <button onclick="decline()">暫不接受</button>
     `;
   }
-
   else if (step === 1) {
     app.innerHTML = `
       <div class="quest">📜 任務：回覆婚禮出席意願</div>
       <p class="npc">👤 村長：</p>
-      <p>請先告訴我你的名字。</p>
+      <p>請告訴我你的名字。</p>
       <input id="name" placeholder="冒險者名稱">
       <button onclick="saveName()">確定</button>
     `;
   }
-
   else if (step === 2) {
     app.innerHTML = `
       <p class="npc">👤 村長：</p>
@@ -194,7 +191,6 @@ function render() {
       <button onclick="saveAttend('不克出席')">不克出席</button>
     `;
   }
-
   else if (step === 3) {
     app.innerHTML = `
       <p class="npc">👤 村長：</p>
@@ -204,7 +200,6 @@ function render() {
       <button onclick="saveSession('迎娶＋宴客')">兩者皆參加</button>
     `;
   }
-
   else if (step === 4) {
     app.innerHTML = `
       <p class="npc">👤 村長：</p>
@@ -213,18 +208,17 @@ function render() {
       <button onclick="finish()">完成任務</button>
     `;
   }
-
   else if (step === 5) {
     app.innerHTML = `
       <div class="levelup">✨ LEVEL UP ✨</div>
       <p class="npc">🎉 任務完成 🎉</p>
       <p>新人已收到你的回覆<br>感到非常開心！</p>
-      <p class="exp">EXP +1314<br>名聲 +520 💛</p>
+      <p class="exp">EXP +100<br>好感度 +10 💛</p>
     `;
   }
 }
 
-/* 🍁 行為 */
+/* 🎯 行為 */
 function decline() {
   document.getElementById("app").innerHTML = `
     <p class="npc">👤 村長：</p>
@@ -238,21 +232,32 @@ function saveName() {
   data.name = v;
   step++; render();
 }
+function saveAttend(v){ data.attend=v; step++; render(); }
+function saveSession(v){ data.session=v; step++; render(); }
+function finish(){ data.note=document.getElementById("note").value; step++; render(); }
 
-function saveAttend(v) { data.attend = v; step++; render(); }
-function saveSession(v) { data.session = v; step++; render(); }
-function finish() { data.note = document.getElementById("note").value; step++; render(); }
+/* 🍁🍄💰🐌🪾📜 漂浮系統 */
+const floatItems = [
+  { emoji: "🍁", size: 22, count: 10, speed: 1 },
+  { emoji: "🍄", size: 20, count: 4,  speed: 0.9 },
+  { emoji: "💰", size: 18, count: 3,  speed: 1.3 },
+  { emoji: "🐌", size: 20, count: 2,  speed: 0.6 },
+  { emoji: "🪾", size: 18, count: 5,  speed: 1.1 },
+  { emoji: "📜", size: 18, count: 2,  speed: 0.8 }
+];
 
-/* 🍁 楓葉生成 */
-for (let i = 0; i < 12; i++) {
-  const leaf = document.createElement("div");
-  leaf.className = "leaf";
-  leaf.innerText = "🍁";
-  leaf.style.left = Math.random() * 100 + "vw";
-  leaf.style.animationDuration = 6 + Math.random() * 6 + "s";
-  leaf.style.animationDelay = Math.random() * 5 + "s";
-  document.body.appendChild(leaf);
-}
+floatItems.forEach(item=>{
+  for(let i=0;i<item.count;i++){
+    const el=document.createElement("div");
+    el.className="leaf";
+    el.innerText=item.emoji;
+    el.style.left=Math.random()*100+"vw";
+    el.style.fontSize=item.size+"px";
+    el.style.animationDuration=(7/item.speed+Math.random()*5)+"s";
+    el.style.animationDelay=Math.random()*6+"s";
+    document.body.appendChild(el);
+  }
+});
 
 render();
 </script>
