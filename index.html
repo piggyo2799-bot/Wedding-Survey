@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-TW">
 <head>
-<meta charset="UTF-8">
+<meta charset="UTF-8" />
 <title>婚禮任務｜加穎 & 姵妤</title>
 <style>
 body {
@@ -14,7 +14,7 @@ body {
 }
 .box {
   width:360px;
-  background:#fdf6dc;
+  background:#fff6dc;
   border:4px solid #5a4632;
   padding:20px;
 }
@@ -25,60 +25,99 @@ button {
   border:2px solid #5a4632;
   cursor:pointer;
 }
+input, textarea {
+  width:100%;
+  margin-top:8px;
+}
 </style>
 </head>
 <body>
 
-<div class="box" id="app">
-  <p id="text">🧙‍♂️ 村長：冒險者，是否接受參加「加穎 & 姵妤」的婚禮任務？</p>
-  <button onclick="next()">接受任務</button>
-</div>
+<div class="box" id="app"></div>
 
 <script>
-const apiURL = https://script.google.com/macros/s/AKfycbxLGthp3Cwuc9SKYwp69wz2eakuEtwWRAq9r_wJVewAEgDfnhdBXWaXrIows61V9JqK/exec;
 let step = 0;
 let data = {};
 
-function next() {
-  const app = document.getElementById("app");
-  step++;
+render();
 
-  if(step===1){
-    app.innerHTML = `名字是？<br><input id="name"><br><button onclick="saveName()">下一句對話</button>`;
+function render() {
+  const app = document.getElementById("app");
+
+  if (step === 0) {
+    app.innerHTML = `
+      🧙‍♂️ 村長：冒險者，是否接受參加「加穎 & 姵妤」的婚禮任務？<br>
+      <button onclick="next()">接受任務</button>
+    `;
+  }
+
+  if (step === 1) {
+    app.innerHTML = `
+      請輸入你的大名：<br>
+      <input id="name"><br>
+      <button onclick="saveName()">下一句對話</button>
+    `;
+  }
+
+  if (step === 2) {
+    app.innerHTML = `
+      是否能出席婚禮？<br>
+      <button onclick="saveAttend('會出席')">我一定會到</button>
+      <button onclick="saveAttend('無法出席')">無法出席</button>
+    `;
+  }
+
+  if (step === 3) {
+    app.innerHTML = `
+      出席場次為？<br>
+      <button onclick="saveSession('迎娶')">迎娶（上午）</button>
+      <button onclick="saveSession('午宴')">午宴</button>
+      <button onclick="saveSession('迎娶＋午宴')">都出席</button>
+    `;
+  }
+
+  if (step === 4) {
+    app.innerHTML = `
+      有想對新人說的話嗎？<br>
+      <textarea id="note"></textarea><br>
+      <button onclick="finish()">完成任務</button>
+    `;
+  }
+
+  if (step === 5) {
+    app.innerHTML = `
+      🎉 任務完成！<br><br>
+      感謝冒險者 <b>${data.name}</b><br>
+      婚禮當天見 💍🍁<br><br>
+      🏆 成就解鎖：<br>
+      《見證幸福的一刻》 EXP +100
+    `;
   }
 }
 
-function saveName(){
+function next() {
+  step++;
+  render();
+}
+
+function saveName() {
   data.name = document.getElementById("name").value;
-  document.getElementById("app").innerHTML = `
-  是否出席？<br>
-  <button onclick="attend('會出席')">我一定會到</button>
-  <button onclick="attend('不出席')">無法出席</button>`;
+  next();
 }
 
-function attend(v){
+function saveAttend(v) {
   data.attend = v;
-  document.getElementById("app").innerHTML = `
-  出席場次？<br>
-  <button onclick="session('迎娶')">迎娶（上午）</button>
-  <button onclick="session('午宴')">午宴</button>
-  <button onclick="session('迎娶＋午宴')">都出席</button>`;
+  next();
 }
 
-function session(v){
+function saveSession(v) {
   data.session = v;
-  submit();
+  next();
 }
 
-function submit(){
-  fetch(apiURL,{
-    method:"POST",
-    body:JSON.stringify(data)
-  });
-  document.getElementById("app").innerHTML = `
-  🎉 任務完成！<br>
-  EXP +100<br>
-  婚禮當天見 🍁`;
+function finish() {
+  data.note = document.getElementById("note").value;
+  next();
 }
 </script>
 
