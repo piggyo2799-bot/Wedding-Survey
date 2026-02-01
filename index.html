@@ -8,8 +8,7 @@
   body {
     margin: 0;
     height: 100vh;
-    background:
-      linear-gradient(#b9d3a7, #7fa07a);
+    background: linear-gradient(#b9d3a7, #7fa07a);
     display: flex;
     justify-content: center;
     align-items: center;
@@ -20,22 +19,24 @@
     background: #f4ecd6;
     border: 8px solid #9c8354;
     box-shadow: 0 0 0 4px #fff, 6px 6px 0 rgba(0,0,0,0.35);
-    width: 380px;
-    padding: 16px;
+    width: 390px;
+    padding: 14px;
+  }
+
+  .music-hint {
+    background: #fff;
+    border: 2px solid #6b5a3a;
+    padding: 6px;
+    margin-bottom: 6px;
+    font-size: 13px;
+    text-align: center;
   }
 
   .window {
     background: #fff8e6;
     border: 4px solid #6b5a3a;
     padding: 14px;
-    min-height: 260px;
-  }
-
-  h2 {
-    margin: 0 0 10px;
-    text-align: center;
-    color: #5a3d1e;
-    font-size: 16px;
+    min-height: 280px;
   }
 
   p {
@@ -58,6 +59,11 @@
     font-size: 13px;
   }
 
+  .exp {
+    color: #a36a00;
+    font-weight: bold;
+  }
+
   input, textarea {
     width: 100%;
     padding: 6px;
@@ -69,7 +75,7 @@
   }
 
   button {
-    margin-top: 10px;
+    margin-top: 8px;
     padding: 6px 14px;
     font-family: inherit;
     font-size: 14px;
@@ -84,26 +90,26 @@
     box-shadow: 1px 1px 0 #bfa76a;
   }
 
-  .exp {
-    color: #a36a00;
-    font-weight: bold;
+  .emoji-bar {
+    text-align: center;
+    font-size: 22px;
+    margin-bottom: 6px;
+  }
+
+  .pixel-img {
+    display: block;
+    margin: 6px auto;
+    width: 120px;
+    image-rendering: pixelated;
   }
 </style>
 </head>
 
 <body>
 <div class="frame">
-  
+
   <!-- 🎵 音樂提示 -->
-  <div id="musicHint" style="
-    display:none;
-    background:#fff;
-    border:2px solid #6b5a3a;
-    padding:6px;
-    margin-bottom:6px;
-    font-size:13px;
-    text-align:center;
-  ">
+  <div id="musicHint" class="music-hint">
     🔊 建議開啟背景音樂，體驗完整冒險感<br>
     <button onclick="enableMusic()">開啟音樂</button>
   </div>
@@ -111,91 +117,102 @@
   <div class="window" id="app"></div>
 </div>
 
-<!-- 🎵 音樂（合法，可公開播放） -->
+<!-- 🎵 音樂（合法素材） -->
 <audio id="music-login" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5c31e4d1c4.mp3" type="audio/mpeg">
+  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5c31e4d1c4.mp3">
 </audio>
-
 <audio id="music-quest" loop>
-  <source src="https://cdn.pixabay.com/audio/2022/10/18/audio_8a3f2c5f6c.mp3" type="audio/mpeg">
+  <source src="https://cdn.pixabay.com/audio/2022/10/18/audio_8a3f2c5f6c.mp3">
 </audio>
-
 <audio id="music-finish">
-  <source src="https://cdn.pixabay.com/audio/2022/03/09/audio_1c3d44e7c2.mp3" type="audio/mpeg">
+  <source src="https://cdn.pixabay.com/audio/2022/03/09/audio_1c3d44e7c2.mp3">
 </audio>
 
 <script>
 let step = 0;
 let data = {};
-let musicStarted = false;
+let musicEnabled = false;
 
-window.onload = () => {
-  document.getElementById("musicHint").style.display = "block";
-  render();
-};
+window.onload = () => render();
 
-/* ===== 音樂控制 ===== */
+/* ===== 音樂 ===== */
 function stopAllMusic() {
   ["music-login","music-quest","music-finish"].forEach(id => {
     const m = document.getElementById(id);
-    m.pause();
-    m.currentTime = 0;
+    m.pause(); m.currentTime = 0;
   });
 }
 
-function playLoginMusic() {
-  stopAllMusic();
-  const m = document.getElementById("music-login");
-  m.volume = 0.35;
-  m.play();
+function enableMusic() {
+  musicEnabled = true;
+  document.getElementById("musicHint").style.display = "none";
+  playQuestMusic();
 }
 
 function playQuestMusic() {
+  if (!musicEnabled) return;
   stopAllMusic();
   const m = document.getElementById("music-quest");
-  m.volume = 0.35;
-  m.play();
+  m.volume = 0.35; m.play();
 }
 
 function playFinishMusic() {
+  if (!musicEnabled) return;
   stopAllMusic();
   const m = document.getElementById("music-finish");
-  m.volume = 0.5;
-  m.play();
+  m.volume = 0.5; m.play();
+}
+
+/* ===== SVG 公告牌 ===== */
+function noticeBoard() {
+  return `
+  <div style="text-align:center; margin-bottom:6px;">
+    <svg width="120" height="80" viewBox="0 0 120 80">
+      <rect x="10" y="10" width="100" height="50" rx="6"
+        fill="#f6dc9a" stroke="#6b5a3a" stroke-width="4"/>
+      <text x="60" y="42" text-anchor="middle"
+        font-size="14" fill="#5a3d1e">任務公告</text>
+      <rect x="55" y="60" width="10" height="18"
+        fill="#6b5a3a"/>
+    </svg>
+  </div>`;
 }
 
 /* ===== 畫面流程 ===== */
 function render() {
   const app = document.getElementById("app");
 
-  /* Step 0：是否接受婚禮任務 */
   if (step === 0) {
     app.innerHTML = `
+      ${noticeBoard()}
+      <div class="emoji-bar">🌳 🍁 🍄</div>
       <p class="npc">👤 村長：</p>
       <p>
         冒險者啊……<br>
         你是否願意接受<br>
         「加穎 & 姵妤」的婚禮任務？
       </p>
-      <button onclick="acceptQuest()">接受任務</button>
-      <button onclick="declineQuest()">暫不接受</button>
+      <button onclick="step=1;render()">接受任務</button>
+      <button onclick="decline()">暫不接受</button>
     `;
   }
 
-  /* Step 1：輸入名字 */
   else if (step === 1) {
     app.innerHTML = `
       <div class="quest">📜 任務：回覆婚禮出席意願</div>
+      <img class="pixel-img"
+        src="https://opengameart.org/sites/default/files/tree_0.png">
       <p class="npc">👤 村長：</p>
-      <p>先告訴我你的名字吧，冒險者。</p>
-      <input id="name" placeholder="輸入你的名字" />
+      <p>先告訴我你的名字吧。</p>
+      <input id="name" placeholder="冒險者名稱">
       <button onclick="saveName()">確定</button>
     `;
   }
 
-  /* Step 2：是否出席 */
   else if (step === 2) {
+    playQuestMusic();
     app.innerHTML = `
+      <div class="emoji-bar">🍄 🍄</div>
       <p class="npc">👤 村長：</p>
       <p>你是否能出席婚禮呢？</p>
       <button onclick="saveAttend('出席')">我會出席</button>
@@ -203,7 +220,6 @@ function render() {
     `;
   }
 
-  /* Step 3：場次選擇 */
   else if (step === 3) {
     app.innerHTML = `
       <p class="npc">👤 村長：</p>
@@ -214,7 +230,6 @@ function render() {
     `;
   }
 
-  /* Step 4：留言 */
   else if (step === 4) {
     app.innerHTML = `
       <p class="npc">👤 村長：</p>
@@ -224,34 +239,21 @@ function render() {
     `;
   }
 
-  /* Step 5：完成 */
   else if (step === 5) {
     playFinishMusic();
     app.innerHTML = `
+      <div class="emoji-bar">✨ 🎉 ✨</div>
       <p class="npc">✨ 任務完成 ✨</p>
-      <p>
-        你已成功回覆婚禮邀請<br>
-        新人感到非常開心！
-      </p>
-      <p class="exp">
-        EXP +100<br>
-        好感度 +10 💛
-      </p>
+      <p>新人已收到你的回覆<br>感到非常開心！</p>
+      <p class="exp">EXP +1314<br>名聲 +520 💛</p>
     `;
   }
 }
 
-/* ===== 動作 ===== */
-function acceptQuest() {
-  playQuestMusic();
-  step = 1;
-  render();
-}
-
-function declineQuest() {
+function decline() {
   document.getElementById("app").innerHTML = `
     <p class="npc">👤 村長：</p>
-    <p>沒關係的冒險者，<br>若你改變心意，<br>隨時歡迎回來。</p>
+    <p>沒關係的冒險者，<br>隨時歡迎回來。</p>
   `;
 }
 
@@ -259,32 +261,12 @@ function saveName() {
   const v = document.getElementById("name").value;
   if (!v) return alert("請輸入名字");
   data.name = v;
-  step++;
-  render();
+  step++; render();
 }
 
-function saveAttend(v) {
-  data.attend = v;
-  step++;
-  render();
-}
-
-function saveSession(v) {
-  data.session = v;
-  step++;
-  render();
-}
-
-function finish() {
-  data.note = document.getElementById("note").value;
-  step++;
-  render();
-}
+function saveAttend(v) { data.attend = v; step++; render(); }
+function saveSession(v) { data.session = v; step++; render(); }
+function finish() { data.note = document.getElementById("note").value; step++; render(); }
 </script>
 </body>
 </html>
-
-function enableMusic() {
-  playQuestMusic(); // 使用者互動 → 瀏覽器允許播放
-  document.getElementById("musicHint").style.display = "none";
-}
