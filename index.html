@@ -8,39 +8,48 @@
   body {
     margin: 0;
     height: 100vh;
-    background:
-      radial-gradient(circle at top, rgba(255,255,255,0.5), transparent 60%),
-      linear-gradient(#8fd19e, #5aa469);
+    background: url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80")
+      center / cover no-repeat fixed;
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: "Courier New", monospace;
   }
 
+  .overlay {
+    background: rgba(255, 255, 255, 0.55);
+    position: fixed;
+    inset: 0;
+  }
+
   .book {
+    position: relative;
+    z-index: 2;
     background: #f7f0dc;
     border: 10px solid #c8b38a;
-    box-shadow: 0 0 0 4px #fff, 8px 8px 0 rgba(0,0,0,0.25);
+    box-shadow: 0 0 0 4px #fff, 8px 8px 0 rgba(0,0,0,0.35);
     width: 380px;
     padding: 18px;
   }
 
   .screen {
-    background: linear-gradient(#dff3e3, #b7ddb0);
+    background: linear-gradient(#f4ffe8, #d9f2cc);
     border: 4px solid #6b4f2a;
     padding: 16px;
     min-height: 260px;
   }
 
   h2 {
-    margin: 0 0 10px;
+    margin: 0 0 12px;
     text-align: center;
-    color: #5a3d1e;
+    color: #4e6b3f;
+    letter-spacing: 1px;
   }
 
   p {
     font-size: 14px;
     margin: 6px 0;
+    color: #3e3e3e;
   }
 
   .login {
@@ -59,11 +68,11 @@
   }
 
   button {
-    margin-top: 10px;
-    padding: 6px 16px;
+    margin-top: 12px;
+    padding: 8px 18px;
     font-family: inherit;
     font-size: 14px;
-    background: linear-gradient(#f9e29c, #e3b95b);
+    background: linear-gradient(#ffe9a8, #e0b861);
     border: 2px solid #6b4f2a;
     box-shadow: 2px 2px 0 #bfa76a;
     cursor: pointer;
@@ -79,13 +88,6 @@
     color: #5a3d1e;
   }
 
-  .music {
-    text-align: right;
-    font-size: 12px;
-    cursor: pointer;
-    color: #5a3d1e;
-  }
-
   .quest {
     background: #fff;
     border: 2px dashed #6b4f2a;
@@ -93,30 +95,41 @@
     margin-bottom: 8px;
     font-size: 13px;
   }
+
+  .exp {
+    color: #c07c00;
+    font-weight: bold;
+  }
 </style>
 </head>
 
 <body>
+<div class="overlay"></div>
+
 <div class="book">
-  <div class="music" onclick="toggleMusic()">🎵 音樂 開 / 關</div>
   <div class="screen" id="app"></div>
 </div>
 
 <audio id="bgm" loop>
-  <!-- 免費、合法、楓之谷感的背景音樂 -->
-  <source src="https://cdn.pixabay.com/audio/2022/10/18/audio_8a3f2c5f6c.mp3" type="audio/mpeg">
+  <!-- 免費、合法、楓之谷感背景音樂 -->
+  <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5c31e4d1c4.mp3" type="audio/mpeg">
 </audio>
 
 <script>
 let step = 0;
 let data = {};
-
-function toggleMusic() {
-  const bgm = document.getElementById("bgm");
-  bgm.paused ? bgm.play() : bgm.pause();
-}
+let musicStarted = false;
 
 window.onload = () => render();
+
+function playMusic() {
+  if (!musicStarted) {
+    const bgm = document.getElementById("bgm");
+    bgm.volume = 0.4;
+    bgm.play();
+    musicStarted = true;
+  }
+}
 
 function render() {
   const app = document.getElementById("app");
@@ -127,7 +140,7 @@ function render() {
       <div class="login">
         <p>請輸入冒險者名稱</p>
         <input id="name" placeholder="角色名稱" />
-        <button onclick="saveName()">開始冒險</button>
+        <button onclick="startAdventure()">開始冒險</button>
       </div>
     `;
   }
@@ -165,15 +178,16 @@ function render() {
     app.innerHTML = `
       <p class="npc">✨ 任務完成 ✨</p>
       <p>新人已收到你的回覆<br>感到非常開心！</p>
-      <p><strong>EXP +100<br>好感度 +10 💛</strong></p>
+      <p class="exp">EXP +100<br>好感度 +10 💛</p>
     `;
   }
 }
 
-function saveName() {
+function startAdventure() {
   const v = document.getElementById("name").value;
   if (!v) return alert("請輸入名字");
   data.name = v;
+  playMusic();   // ✅ 保證音樂在這一刻播放
   step++;
   render();
 }
