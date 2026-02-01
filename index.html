@@ -9,21 +9,19 @@ body {
   margin: 0;
   height: 100vh;
   background:
-    linear-gradient(rgba(255,248,230,0.6), rgba(255,248,230,0.75)),
+    linear-gradient(rgba(255,248,230,0.65), rgba(255,248,230,0.8)),
     url("https://cdn.pixabay.com/photo/2020/04/18/07/58/fantasy-5052484_1280.jpg");
   background-size: cover;
   background-position: center;
   background-attachment: fixed;
-
   display: flex;
   justify-content: center;
   align-items: center;
-
   font-family: "Courier New", monospace;
   overflow: hidden;
 }
 
-/* 🍁 外層木框 */
+/* 🪵 外框 */
 .frame {
   background: linear-gradient(#c7a96d, #8b6b3e);
   padding: 12px;
@@ -36,8 +34,8 @@ body {
   background: #fff8e6;
   border: 4px solid #6b5a3a;
   padding: 14px;
-  width: 380px;
-  min-height: 300px;
+  width: 390px;
+  min-height: 320px;
   position: relative;
   z-index: 2;
 }
@@ -46,35 +44,11 @@ p {
   font-size: 14px;
   line-height: 1.6;
   margin: 6px 0;
-  color: #3e3e3e;
 }
 
 .npc {
   font-weight: bold;
   color: #5a3d1e;
-}
-
-.quest {
-  background: #fff;
-  border: 2px dashed #6b5a3a;
-  padding: 6px;
-  margin-bottom: 8px;
-  font-size: 13px;
-}
-
-.exp {
-  color: #a36a00;
-  font-weight: bold;
-}
-
-input, textarea {
-  width: 100%;
-  padding: 6px;
-  font-family: inherit;
-  border: 2px solid #6b5a3a;
-  background: #fffdf5;
-  margin-top: 6px;
-  box-sizing: border-box;
 }
 
 button {
@@ -93,7 +67,16 @@ button:active {
   box-shadow: 1px 1px 0 #bfa76a;
 }
 
-/* 🍁 漂浮動畫 */
+input, textarea {
+  width: 100%;
+  padding: 6px;
+  border: 2px solid #6b5a3a;
+  background: #fffdf5;
+  margin-top: 6px;
+  font-family: inherit;
+}
+
+/* 🍃 飄逸動畫 */
 .leaf {
   position: fixed;
   top: -50px;
@@ -102,33 +85,28 @@ button:active {
     sway ease-in-out infinite;
   pointer-events: none;
   z-index: 1;
-  opacity: 0.85;
 }
 
 @keyframes fall {
-  to {
-    transform: translateY(110vh) rotate(360deg);
-  }
+  to { transform: translateY(110vh) rotate(360deg); }
 }
-
 @keyframes sway {
-  0%   { margin-left: 0; }
-  50%  { margin-left: 30px; }
+  0% { margin-left: 0; }
+  50% { margin-left: 30px; }
   100% { margin-left: 0; }
 }
 
 /* ✨ LEVEL UP */
 .levelup {
   text-align: center;
-  animation: glow 1.2s infinite alternate;
-  color: #a36a00;
-  font-weight: bold;
   font-size: 18px;
+  font-weight: bold;
+  color: #a36a00;
+  animation: glow 1.2s infinite alternate;
 }
-
 @keyframes glow {
   from { text-shadow: 0 0 4px #ffd700; }
-  to   { text-shadow: 0 0 12px #fff3a0; }
+  to { text-shadow: 0 0 12px #fff3a0; }
 }
 </style>
 </head>
@@ -143,157 +121,159 @@ button:active {
 let step = 0;
 let data = {};
 
-/* 🌅 背景亮度隨進度變化 */
-function updateBackground() {
-  document.body.style.filter =
-    "brightness(" + (0.85 + step * 0.03) + ")";
+/* 🌅 背景亮度 */
+function updateBg(){
+  document.body.style.filter = "brightness(" + (0.85 + step * 0.03) + ")";
 }
 
-/* 🪵 SVG 任務公告牌 */
-function noticeBoard() {
+/* 🪵 公告牌 */
+function noticeBoard(){
   return `
-  <div style="text-align:center; margin-bottom:6px;">
-    <svg width="120" height="80" viewBox="0 0 120 80">
+  <div style="text-align:center;margin-bottom:6px">
+    <svg width="120" height="80">
       <rect x="10" y="10" width="100" height="50" rx="6"
         fill="#f6dc9a" stroke="#6b5a3a" stroke-width="4"/>
       <text x="60" y="42" text-anchor="middle"
         font-size="14" fill="#5a3d1e">任務公告</text>
-      <rect x="55" y="60" width="10" height="18"
-        fill="#6b5a3a"/>
+      <rect x="55" y="60" width="10" height="18" fill="#6b5a3a"/>
     </svg>
   </div>`;
 }
 
 /* 🎮 主流程 */
-function render() {
-  updateBackground();
+function render(){
+  updateBg();
   const app = document.getElementById("app");
 
-  if (step === 0) {
+  if(step===0){
     app.innerHTML = `
       ${noticeBoard()}
       <p class="npc">👤 村長：</p>
       <p>
-        冒險者啊……<br>
-        你是否願意接受<br>
-        「加穎 & 姵妤」的婚禮任務？
+      冒險者啊……<br>
+      <b>爻煞氣a加穎乂 & Oo稚氣a姵妤oO</b><br>
+      將於<br>
+      📅 2027/01/23（六）午宴<br>
+      📍 高雄 寒軒國際大飯店 6F 庭園城<br><br>
+      你是否願意接受這項<br>
+      「婚禮回覆任務」？
       </p>
       <button onclick="step=1;render()">接受任務</button>
-      <button onclick="decline()">暫不接受</button>
+      <button onclick="decline()">暫時無法接任務</button>
     `;
   }
-  else if (step === 1) {
+
+  else if(step===1){
     app.innerHTML = `
-      <div class="quest">📜 任務：回覆婚禮出席意願</div>
       <p class="npc">👤 村長：</p>
-      <p>請告訴我你的名字。</p>
-      <input id="name" placeholder="冒險者名稱">
+      <p>請告訴我你的名字吧，冒險者。</p>
+      <input id="name">
       <button onclick="saveName()">確定</button>
     `;
   }
-  else if (step === 2) {
+
+  else if(step===2){
     app.innerHTML = `
       <p class="npc">👤 村長：</p>
-      <p>你是否能出席婚禮呢？</p>
-      <button onclick="saveAttend('出席')">我會出席</button>
-      <button onclick="saveAttend('不克出席')">不克出席</button>
+      <p>你是否能親自解完這項任務呢？</p>
+      <button onclick="saveAttend('出席')">是，一定要解到！</button>
+      <button onclick="saveAttend('不克出席')">否，另有任務在身</button>
     `;
   }
-  else if (step === 3) {
+
+  else if(step===3){
     app.innerHTML = `
       <p class="npc">👤 村長：</p>
-      <p>你將參加哪一個場次？</p>
-      <button onclick="saveSession('早上迎娶')">早上迎娶</button>
-      <button onclick="saveSession('中午宴客')">中午宴客</button>
-      <button onclick="saveSession('迎娶＋宴客')">兩者皆參加</button>
+      <p>你將挑戰哪一個關卡？</p>
+      <button onclick="saveSession('迎娶')">迎娶</button>
+      <button onclick="saveSession('午宴')">午宴</button>
+      <button onclick="saveSession('迎娶＋午宴')">兩者皆參加</button>
     `;
   }
-else if (step === 4) {
 
-  const message =
-    (data.attend === "不克出席")
-      ? "有沒有想對新人說的祝福？"
-      : "有沒有想對新人說的話？";
+  else if(step===4){
+    const msg = data.attend==="不克出席"
+      ? "我們會想念你。有沒有想對新人說的祝福？"
+      : "太好了！有沒有想對新人說的話？";
 
-  app.innerHTML = `
-    <p class="npc">👤 村長：</p>
-    <p>${message}</p>
-    <textarea id="note" rows="3"></textarea>
-    <button onclick="finish()">完成任務</button>
-  `;
-}
+    app.innerHTML = `
+      <p class="npc">👤 村長：</p>
+      <p>${msg}</p>
+      <textarea id="note" rows="3"></textarea>
+      <button onclick="finish()">完成任務</button>
+    `;
+  }
 
-  else if (step === 5) {
-     coinBurst(); // 💰 任務完成瞬間掉寶
+  else if(step===5){
+    coinBurst();
     app.innerHTML = `
       <div class="levelup">✨ LEVEL UP ✨</div>
-      <p class="npc">🎉 任務完成 🎉</p>
-      <p>新人已收到你的回覆<br>感到非常開心！</p>
-      <p class="exp">EXP +1314<br>名聲值 +520 💛</p>
+      <p class="npc">👤 村長露出了滿意的笑容……</p>
+      <p>
+      你的心意，已成功送達。<br>
+      這將成為新人旅程中<br>
+      最珍貴的力量。
+      </p>
+      <p><b>EXP +1314520000</b></p>
     `;
   }
 }
 
 /* 🎯 行為 */
-function decline() {
-  document.getElementById("app").innerHTML = `
-    <p class="npc">👤 村長：</p>
-    <p>沒關係的冒險者，<br>隨時歡迎回來。</p>
-  `;
+function decline(){
+  document.getElementById("app").innerHTML =
+    "<p class='npc'>👤 村長：</p><p>沒關係的冒險者，期待下次再並肩作戰。</p>";
+}
+function saveName(){
+  const v=document.getElementById("name").value;
+  if(!v) return alert("請輸入名字");
+  data.name=v; step=2; render();
+}
+function saveAttend(v){
+  data.attend=v;
+  step = v==="出席" ? 3 : 4;
+  render();
+}
+function saveSession(v){ data.session=v; step=4; render(); }
+function finish(){ data.note=document.getElementById("note").value; step=5; render(); }
+
+/* 💰 金幣暴增 */
+function coinBurst(){
+  for(let i=0;i<20;i++){
+    const c=document.createElement("div");
+    c.className="leaf";
+    c.innerText="💰";
+    c.style.left=Math.random()*100+"vw";
+    c.style.fontSize="22px";
+    c.style.animationDuration="3s";
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3000);
+  }
 }
 
-function saveName() {
-  const v = document.getElementById("name").value;
-  if (!v) return alert("請輸入名字");
-  data.name = v;
-  step++; render();
-}
-function saveAttend(v){ data.attend=v; step++; render(); }
-function saveSession(v){ data.session=v; step++; render(); }
-function finish(){ data.note=document.getElementById("note").value; step++; render(); }
-
-/* 🍁🍄💰🐌🪾📜 漂浮系統 */
-const floatItems = [
-  { emoji: "🍁", size: 22, count: 10, speed: 1 },
-  { emoji: "🍄", size: 20, count: 4,  speed: 0.9 },
-  { emoji: "💰", size: 18, count: 3,  speed: 1.3 },
-  { emoji: "🐌", size: 20, count: 2,  speed: 0.6 },
-  { emoji: "🪾", size: 18, count: 5,  speed: 1.1 },
-  { emoji: "📜", size: 18, count: 2,  speed: 0.8 },
-  { emoji: "🌳", size: 22, count: 3,  speed: 0.7 }
-];
-
-floatItems.forEach(item=>{
-  for(let i=0;i<item.count;i++){
+/* 🍁🍄💰🐌🪾📜🌳 漂浮物 */
+[
+ {e:"🍁",s:22,c:10,sp:1},
+ {e:"🍄",s:20,c:4,sp:0.9},
+ {e:"💰",s:18,c:3,sp:1.3},
+ {e:"🐌",s:20,c:2,sp:0.6},
+ {e:"🪾",s:18,c:5,sp:1.1},
+ {e:"📜",s:18,c:2,sp:0.8},
+ {e:"🌳",s:22,c:3,sp:0.7}
+].forEach(i=>{
+  for(let n=0;n<i.c;n++){
     const el=document.createElement("div");
     el.className="leaf";
-    el.innerText=item.emoji;
+    el.innerText=i.e;
     el.style.left=Math.random()*100+"vw";
-    el.style.fontSize=item.size+"px";
-    el.style.animationDuration=(7/item.speed+Math.random()*5)+"s";
+    el.style.fontSize=i.s+"px";
+    el.style.animationDuration=(7/i.sp+Math.random()*5)+"s";
     el.style.animationDelay=Math.random()*6+"s";
     document.body.appendChild(el);
   }
 });
 
 render();
-
-  /* 💰 任務完成金幣暴增 */
-function coinBurst() {
-  for (let i = 0; i < 20; i++) {
-    const coin = document.createElement("div");
-    coin.className = "leaf";
-    coin.innerText = "💰";
-    coin.style.left = Math.random() * 100 + "vw";
-    coin.style.fontSize = "22px";
-    coin.style.animationDuration = "3s";
-    coin.style.opacity = "1";
-    document.body.appendChild(coin);
-
-    setTimeout(() => coin.remove(), 3000);
-  }
-}
-
 </script>
 
 </body>
