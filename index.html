@@ -2,85 +2,47 @@
 <html lang="zh-TW">
 <head>
 <meta charset="UTF-8" />
-<title>婚禮冒險｜加穎 & 姵妤</title>
+<title>婚禮任務｜加穎 & 姵妤</title>
 
 <style>
   body {
     margin: 0;
     height: 100vh;
-    background: url("https://images.unsplash.com/photo-1501785888041-af3ef285b470?auto=format&fit=crop&w=1200&q=80")
-      center / cover no-repeat fixed;
+    background:
+      linear-gradient(#b9d3a7, #7fa07a);
     display: flex;
     justify-content: center;
     align-items: center;
     font-family: "Courier New", monospace;
   }
 
-  .overlay {
-    background: rgba(255, 255, 255, 0.55);
-    position: fixed;
-    inset: 0;
-  }
-
-  .book {
-    position: relative;
-    z-index: 2;
-    background: #f7f0dc;
-    border: 10px solid #c8b38a;
-    box-shadow: 0 0 0 4px #fff, 8px 8px 0 rgba(0,0,0,0.35);
+  .frame {
+    background: #f4ecd6;
+    border: 8px solid #9c8354;
+    box-shadow: 0 0 0 4px #fff, 6px 6px 0 rgba(0,0,0,0.35);
     width: 380px;
-    padding: 18px;
+    padding: 16px;
   }
 
-  .screen {
-    background: linear-gradient(#f4ffe8, #d9f2cc);
-    border: 4px solid #6b4f2a;
-    padding: 16px;
+  .window {
+    background: #fff8e6;
+    border: 4px solid #6b5a3a;
+    padding: 14px;
     min-height: 260px;
   }
 
   h2 {
-    margin: 0 0 12px;
+    margin: 0 0 10px;
     text-align: center;
-    color: #4e6b3f;
-    letter-spacing: 1px;
+    color: #5a3d1e;
+    font-size: 16px;
   }
 
   p {
     font-size: 14px;
     margin: 6px 0;
+    line-height: 1.6;
     color: #3e3e3e;
-  }
-
-  .login {
-    text-align: center;
-    margin-top: 20px;
-  }
-
-  input, textarea {
-    width: 100%;
-    padding: 6px;
-    font-family: inherit;
-    border: 2px solid #6b4f2a;
-    background: #fffdf5;
-    margin-top: 6px;
-    box-sizing: border-box;
-  }
-
-  button {
-    margin-top: 12px;
-    padding: 8px 18px;
-    font-family: inherit;
-    font-size: 14px;
-    background: linear-gradient(#ffe9a8, #e0b861);
-    border: 2px solid #6b4f2a;
-    box-shadow: 2px 2px 0 #bfa76a;
-    cursor: pointer;
-  }
-
-  button:active {
-    transform: translate(1px,1px);
-    box-shadow: 1px 1px 0 #bfa76a;
   }
 
   .npc {
@@ -90,29 +52,61 @@
 
   .quest {
     background: #fff;
-    border: 2px dashed #6b4f2a;
+    border: 2px dashed #6b5a3a;
     padding: 6px;
     margin-bottom: 8px;
     font-size: 13px;
   }
 
+  input, textarea {
+    width: 100%;
+    padding: 6px;
+    font-family: inherit;
+    border: 2px solid #6b5a3a;
+    background: #fffdf5;
+    margin-top: 6px;
+    box-sizing: border-box;
+  }
+
+  button {
+    margin-top: 10px;
+    padding: 6px 14px;
+    font-family: inherit;
+    font-size: 14px;
+    background: linear-gradient(#f6dc9a, #d2b26a);
+    border: 2px solid #6b5a3a;
+    box-shadow: 2px 2px 0 #bfa76a;
+    cursor: pointer;
+  }
+
+  button:active {
+    transform: translate(1px,1px);
+    box-shadow: 1px 1px 0 #bfa76a;
+  }
+
   .exp {
-    color: #c07c00;
+    color: #a36a00;
     font-weight: bold;
   }
 </style>
 </head>
 
 <body>
-<div class="overlay"></div>
-
-<div class="book">
-  <div class="screen" id="app"></div>
+<div class="frame">
+  <div class="window" id="app"></div>
 </div>
 
-<audio id="bgm" loop>
-  <!-- 免費、合法、楓之谷感背景音樂 -->
+<!-- 🎵 音樂（合法，可公開播放） -->
+<audio id="music-login" loop>
   <source src="https://cdn.pixabay.com/audio/2022/03/15/audio_5c31e4d1c4.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="music-quest" loop>
+  <source src="https://cdn.pixabay.com/audio/2022/10/18/audio_8a3f2c5f6c.mp3" type="audio/mpeg">
+</audio>
+
+<audio id="music-finish">
+  <source src="https://cdn.pixabay.com/audio/2022/03/09/audio_1c3d44e7c2.mp3" type="audio/mpeg">
 </audio>
 
 <script>
@@ -120,34 +114,73 @@ let step = 0;
 let data = {};
 let musicStarted = false;
 
-window.onload = () => render();
+window.onload = () => {
+  playLoginMusic();
+  render();
+};
 
-function playMusic() {
-  if (!musicStarted) {
-    const bgm = document.getElementById("bgm");
-    bgm.volume = 0.4;
-    bgm.play();
-    musicStarted = true;
-  }
+/* ===== 音樂控制 ===== */
+function stopAllMusic() {
+  ["music-login","music-quest","music-finish"].forEach(id => {
+    const m = document.getElementById(id);
+    m.pause();
+    m.currentTime = 0;
+  });
 }
 
+function playLoginMusic() {
+  stopAllMusic();
+  const m = document.getElementById("music-login");
+  m.volume = 0.35;
+  m.play();
+}
+
+function playQuestMusic() {
+  stopAllMusic();
+  const m = document.getElementById("music-quest");
+  m.volume = 0.35;
+  m.play();
+}
+
+function playFinishMusic() {
+  stopAllMusic();
+  const m = document.getElementById("music-finish");
+  m.volume = 0.5;
+  m.play();
+}
+
+/* ===== 畫面流程 ===== */
 function render() {
   const app = document.getElementById("app");
 
+  /* Step 0：是否接受婚禮任務 */
   if (step === 0) {
     app.innerHTML = `
-      <h2>🍁 婚禮冒險 🍁</h2>
-      <div class="login">
-        <p>請輸入冒險者名稱</p>
-        <input id="name" placeholder="角色名稱" />
-        <button onclick="startAdventure()">開始冒險</button>
-      </div>
+      <p class="npc">👤 村長：</p>
+      <p>
+        冒險者啊……<br>
+        你是否願意接受<br>
+        「加穎 & 姵妤」的婚禮任務？
+      </p>
+      <button onclick="acceptQuest()">接受任務</button>
+      <button onclick="declineQuest()">暫不接受</button>
     `;
   }
 
+  /* Step 1：輸入名字 */
   else if (step === 1) {
     app.innerHTML = `
       <div class="quest">📜 任務：回覆婚禮出席意願</div>
+      <p class="npc">👤 村長：</p>
+      <p>先告訴我你的名字吧，冒險者。</p>
+      <input id="name" placeholder="輸入你的名字" />
+      <button onclick="saveName()">確定</button>
+    `;
+  }
+
+  /* Step 2：是否出席 */
+  else if (step === 2) {
+    app.innerHTML = `
       <p class="npc">👤 村長：</p>
       <p>你是否能出席婚禮呢？</p>
       <button onclick="saveAttend('出席')">我會出席</button>
@@ -155,7 +188,8 @@ function render() {
     `;
   }
 
-  else if (step === 2) {
+  /* Step 3：場次選擇 */
+  else if (step === 3) {
     app.innerHTML = `
       <p class="npc">👤 村長：</p>
       <p>你將參加哪一個場次？</p>
@@ -165,7 +199,8 @@ function render() {
     `;
   }
 
-  else if (step === 3) {
+  /* Step 4：留言 */
+  else if (step === 4) {
     app.innerHTML = `
       <p class="npc">👤 村長：</p>
       <p>有沒有想對新人說的話？</p>
@@ -174,20 +209,41 @@ function render() {
     `;
   }
 
-  else if (step === 4) {
+  /* Step 5：完成 */
+  else if (step === 5) {
+    playFinishMusic();
     app.innerHTML = `
       <p class="npc">✨ 任務完成 ✨</p>
-      <p>新人已收到你的回覆<br>感到非常開心！</p>
-      <p class="exp">EXP +100<br>好感度 +10 💛</p>
+      <p>
+        你已成功回覆婚禮邀請<br>
+        新人感到非常開心！
+      </p>
+      <p class="exp">
+        EXP +100<br>
+        好感度 +10 💛
+      </p>
     `;
   }
 }
 
-function startAdventure() {
+/* ===== 動作 ===== */
+function acceptQuest() {
+  playQuestMusic();
+  step = 1;
+  render();
+}
+
+function declineQuest() {
+  document.getElementById("app").innerHTML = `
+    <p class="npc">👤 村長：</p>
+    <p>沒關係的冒險者，<br>若你改變心意，<br>隨時歡迎回來。</p>
+  `;
+}
+
+function saveName() {
   const v = document.getElementById("name").value;
   if (!v) return alert("請輸入名字");
   data.name = v;
-  playMusic();   // ✅ 保證音樂在這一刻播放
   step++;
   render();
 }
