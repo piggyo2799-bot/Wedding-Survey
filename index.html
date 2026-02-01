@@ -97,7 +97,9 @@ button:active {
 .leaf {
   position: fixed;
   top: -50px;
-  animation: fall linear infinite;
+  animation:
+    fall linear infinite,
+    sway ease-in-out infinite;
   pointer-events: none;
   z-index: 1;
   opacity: 0.85;
@@ -107,6 +109,12 @@ button:active {
   to {
     transform: translateY(110vh) rotate(360deg);
   }
+}
+
+@keyframes sway {
+  0%   { margin-left: 0; }
+  50%  { margin-left: 30px; }
+  100% { margin-left: 0; }
 }
 
 /* ✨ LEVEL UP */
@@ -209,6 +217,7 @@ function render() {
     `;
   }
   else if (step === 5) {
+     coinBurst(); // 💰 任務完成瞬間掉寶
     app.innerHTML = `
       <div class="levelup">✨ LEVEL UP ✨</div>
       <p class="npc">🎉 任務完成 🎉</p>
@@ -261,6 +270,23 @@ floatItems.forEach(item=>{
 });
 
 render();
+
+  /* 💰 任務完成金幣暴增 */
+function coinBurst() {
+  for (let i = 0; i < 20; i++) {
+    const coin = document.createElement("div");
+    coin.className = "leaf";
+    coin.innerText = "💰";
+    coin.style.left = Math.random() * 100 + "vw";
+    coin.style.fontSize = "22px";
+    coin.style.animationDuration = "3s";
+    coin.style.opacity = "1";
+    document.body.appendChild(coin);
+
+    setTimeout(() => coin.remove(), 3000);
+  }
+}
+
 </script>
 
 </body>
