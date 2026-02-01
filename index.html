@@ -93,6 +93,21 @@
 
 <body>
 <div class="frame">
+  
+  <!-- 🎵 音樂提示 -->
+  <div id="musicHint" style="
+    display:none;
+    background:#fff;
+    border:2px solid #6b5a3a;
+    padding:6px;
+    margin-bottom:6px;
+    font-size:13px;
+    text-align:center;
+  ">
+    🔊 建議開啟背景音樂，體驗完整冒險感<br>
+    <button onclick="enableMusic()">開啟音樂</button>
+  </div>
+
   <div class="window" id="app"></div>
 </div>
 
@@ -115,7 +130,7 @@ let data = {};
 let musicStarted = false;
 
 window.onload = () => {
-  playLoginMusic();
+  document.getElementById("musicHint").style.display = "block";
   render();
 };
 
@@ -268,3 +283,8 @@ function finish() {
 </script>
 </body>
 </html>
+
+function enableMusic() {
+  playQuestMusic(); // 使用者互動 → 瀏覽器允許播放
+  document.getElementById("musicHint").style.display = "none";
+}
